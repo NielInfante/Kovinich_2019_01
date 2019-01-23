@@ -16,28 +16,27 @@ library(gplots)
 # Input and Output
 
 directory<-"~/depot/projects/Kovinich/Kovinich_2019_01/"
-outDir <- "~/depot/projects/Kovinich/Kovinich_2019_01/"
-outPrefix <- 'H2O_NAC42_vs_pGWB2'
+outDir <- "~/depot/projects/Kovinich/Kovinich_2019_01/deseq"
 
 setwd(directory)
 
-# The Stats
-
-PCA_Group <- 'Group'
-design =~ Group 
-contrast <- c('Group','NAC42','pGWB2')
-
-
-
-
 tx2gene <- read.table('Data/IDs', header=T, sep="\t", stringsAsFactors = F)
-
 metadata <- read.table('meta', header = T, sep="\t", stringsAsFactors = T)
 
-meta <- metadata %>% dplyr::filter(Group %in% c('NAC42', 'pGWB2'), 
-																	 Treatment=='H2O')
 
-		
+# The Stats
+
+PCA_Group <- 'Treatment'
+design =~ Treatment 
+contrast <- c('Treatment','H2O','WGE')
+outPrefix <- 'All'
+
+#meta <- metadata %>% dplyr::filter(Group %in% c('NAC42', 'pGWB2'), 
+#																	 Treatment=='H2O')
+
+#meta <- metadata %>% dplyr::filter(Treatment=='H2O')
+meta <- metadata
+
 doItAll()		
 		
 
@@ -79,7 +78,8 @@ res<-res[order(res$padj),]
 res <- as.data.frame(res)
 head(res)
 
-
+# Save dds
+saveRDS(dds, paste0(outDir, '/', outPrefix, '_dds.rds'))
 
 # Get gene names
 res$Gene <- row.names(res)
@@ -87,14 +87,15 @@ res$ID <- row.names(res)
 
 
 # Write Results
-outResults <- data.frame(GeneID=res$ID, Gene=res$Gene, baseMean=res$baseMean, log2FoldChange=res$log2FoldChange, pvalue=res$pvalue, padj=res$padj)
+outResults <- data.frame(GeneID=res$ID, Gene=res$Gene, baseMean=res$baseMean, stat=res$stat, log2FoldChange=res$log2FoldChange, pvalue=res$pvalue, padj=res$padj)
 name <- paste(outDir, '/', outPrefix, '_results.txt', sep="") 
 write.table(outResults, file=name, sep="\t", quote=F, row.names=F)
+
 
 # Significant genes
 r2 <- res[!(is.na(res$padj)),]
 resSig <- r2[ r2$padj < 0.05, ]
-resTable <- data.frame(GeneID=row.names(resSig), Gene=resSig$Gene, baseMean=resSig$baseMean, log2FoldChange=resSig$log2FoldChange, pvalue=resSig$pvalue, padj=resSig$padj)
+resTable <- data.frame(GeneID=row.names(resSig), Gene=resSig$Gene, baseMean=resSig$baseMean, stat=resSig$stat, log2FoldChange=resSig$log2FoldChange, pvalue=resSig$pvalue, padj=resSig$padj)
 write.table(resTable,file=paste(outDir, "/", outPrefix, "_significant.txt", sep=""), sep="\t", quote=F, row.names=F)
 
 
