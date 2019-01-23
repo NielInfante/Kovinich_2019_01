@@ -1,6 +1,21 @@
 # RNAseq
 RNA seq of Soya, looking at NAC42-1 and MYB29A2 overexpressions.
 
+From request:
+can you please determine what genes are sig down and what is sig up in:
+10) NAC42-pGWB2-H2Os / pGWB2-H2Os
+11) NAC42-pGWB2-WGEs / pGWB2-WGEs
+12) MYB29A2-pGWB2-H2Os / pGWB2-H2Os
+13) MYB29A2-pGWB2-WGEs / pGWB2-WGEs
+Also,
+15) Overlap of upreg genes in 11 and 13
+16) Overlap of upreg genes in 10 and 11
+17) Overlap of upreg genes in 12 and 13
+18) Nonoverlap and overlap of genes upreg in WGE hairy roots (old data) and 11
+19) Nonoverlap and overlap of genes upreg in WGE hairy roots (old data) and 13
+
+
+
 
 ## Steps:
 
@@ -46,14 +61,24 @@ conda deactivate
 
 
 
-In the reads folder, use salmon to quantify each read
-
 
 ###  :large_orange_diamond: <!--:white_check_mark:--> Differential expression
 
-Use the R script doDESeq.R to find differentially expressed genes, and produce some figures
+Set up the stats, and use DESeq2 to find differential expression.
 
-### :x: <!--:large_orange_diamond: :white_check_mark:--> Emperor
+##### H2O_NAC42_vs_pGWB2
+
+```
+PCA_Group <- 'Group'
+design =~ Group
+contrast <- c('Group','NAC42','pGWB2')
+outPrefix <- 'H2O_NAC42_vs_pGWB2'
+
+meta <- metadata %>% dplyr::filter(Group %in% c('NAC42', 'pGWB2'), Treatment=='H2O')
+```
+
+
+###  :white_check_mark: Emperor
 Make an interactive PCA to explore data.
 
 ### :x: <!--:large_orange_diamond: :white_check_mark:--> GO Analysis
