@@ -4,24 +4,20 @@ library(rjson)
 library(DESeq2)
 library(readr)
 library(magrittr)
-library('AnnotationDbi')
+#library('AnnotationDbi')
 library('calibrate')
 library("RColorBrewer")
 library(ggplot2)
 library(ggrepel)
 library(gplots)
 
-my_concat <- function(x){paste(x, sep="|", collapse="|")}
-
-# Organism
-library('org.Hs.eg.db')
-orgDB <- org.Hs.eg.db
+#my_concat <- function(x){paste(x, sep="|", collapse="|")}
 
 # Input and Output
 
-directory<-"~/depot/projects/Ma/July_2018/"
-outDir <- "~/depot/projects/Ma/July_2018/deseq"
-outPrefix <- 'Group_Early_Late'
+directory<-"~/depot/projects/Kovinich/Kovinich_2019_01/"
+outDir <- "~/depot/projects/Kovinich/Kovinich_2019_01/"
+outPrefix <- 'H2O_NAC42_vs_pGWB2'
 
 setwd(directory)
 
@@ -29,36 +25,21 @@ setwd(directory)
 
 PCA_Group <- 'Group'
 design =~ Group 
-contrast <- c('Group','Early','Late')
+contrast <- c('Group','NAC42','pGWB2')
 
 
 
 
-tx2gene <- read.table('hg38/IDs', header=T, sep="\t", stringsAsFactors = F)
+tx2gene <- read.table('Data/IDs', header=T, sep="\t", stringsAsFactors = F)
 
 metadata <- read.table('meta', header = T, sep="\t", stringsAsFactors = T)
 
-meta <- metadata %>% dplyr::filter(Group %in% c('Late', 'Early'))
+meta <- metadata %>% dplyr::filter(Group %in% c('NAC42', 'pGWB2'), 
+																	 Treatment=='H2O')
 
-
-
-
-timePoint <- c('0','120d','14d','30d','3d','3h','60d','6d','8h','9d','wo')
-for(idx1 in 1:10){
-	for (idx2 in (idx1+1):11){
-		G1 <- timePoint[idx1]
-		G2 <- timePoint[idx2]
-		print(paste("G1 is",G1,"and G2 is ",G2))
-		meta <- metadata %>% filter(Time %in% c(G1,G2))
 		
-		contrast <- c('Time',G1,G2)
-		outPrefix <- paste0("Time_",G1,"_",G2)
+doItAll()		
 		
-		
-		doItAll()		
-		
-	}
-}
 
 
 
@@ -71,8 +52,8 @@ doItAll <- function(){
 
 #meta <- metadata %>% filter(Time == '0' | Time =='120d')
 #meta <- metadata
-meta$ID <- meta$Sample
-samples <- meta$ID
+meta$ID <- meta$SampleID
+samples <- meta$Filename
 
 files <- paste0(directory, 'salmon/', samples, '/quant.sf')
 
@@ -100,23 +81,9 @@ head(res)
 
 
 
-
-my_concat <- function(x){paste(x, sep="|", collapse="|")}
-
-# Organism
-library('org.Hs.eg.db')
-orgDB <- org.Hs.eg.db
-
-
 # Get gene names
-res$Gene <- mapIds(orgDB, keys=row.names(res), column='SYMBOL', keytype='ENSEMBL', multiVals=my_concat)
+res$Gene <- row.names(res)
 res$ID <- row.names(res)
-
-# Use Gene ID in place where there is no gene name
-idx <- is.na(res$Gene)
-res$Gene[idx] <- res$ID[idx]
-idx <- which(res$Gene == 'NA')  # mapIDs with my_concat can return "NA", not NA
-res$Gene[idx] <- res$ID[idx]
 
 
 # Write Results
@@ -145,13 +112,6 @@ png(name)
 plotMA(dds)
 dev.off()
 
-name <- paste(outDir, '/', outPrefix, '_MA_20.png', sep="") 
-png(name)
-res[1:20,] %>% ggplot(aes(x=baseMean,y=log2FoldChange)) + geom_point() + 
-			geom_text_repel(aes(label=Genus)) + 
-			scale_x_log10() + geom_hline(yintercept=0, color='black') +  theme_bw()
-dev.off()
-
 
 #########  Heatmap   #########
 
@@ -160,7 +120,7 @@ hmcol <- colorRampPalette(brewer.pal(9, "GnBu"))(100)
 
 distsRL <- dist(t(assay(vsd)))
 mat <- as.matrix(distsRL)
-rownames(mat) <- colnames(mat) <- with(colData(dds), paste(Time,ID , sep=" : "))
+rownames(mat) <- colnames(mat) <- with(colData(dds), paste(ID, Group, sep=" : "))
 
 name <- paste(outDir, '/', outPrefix, '_heatmap.png', sep="") 
 png(name)
@@ -172,7 +132,7 @@ dev.off()
 
 name <- paste(outDir, '/', outPrefix, '_cluster.png', sep="") 
 png(name)
-plot(hclust(dist(t(assay(vsd)))), label=with(colData(dds), paste(Time,ID, sep=" : ")), main='Dendrogram', xlab='', sub='')
+plot(hclust(dist(t(assay(vsd)))), label=with(colData(dds), paste(Group,ID, sep=" : ")), main='Dendrogram', xlab='', sub='')
 dev.off()
 
 
@@ -195,41 +155,17 @@ dev.off()
 
 
 
-pcaData <- plotPCA(vsd, intgroup=PCA_Group, returnData=TRUE)
-pcaData$f <- colData(dds)$File
-pcaData$Location <- colData(dds)$Location
-pcaData$BMI <- colData(dds)$BMI
-pcaData$Name <- colData(dds)$PS
-pcaData$Patient <- colData(dds)$Patient
-
-percentVar <- round(100 * attr(pcaData, "percentVar"))
-
-name <- paste(outDir, '/', outPrefix, '_PCA_shape.png', sep="") 
-png(name)
-ggplot(pcaData, aes(PC1, PC2, color=Patient, shape=Location)) +
-	geom_point(aes(size=BMI)) +
-	xlab(paste0("PC1: ",percentVar[1],"% variance")) +
-	ylab(paste0("PC2: ",percentVar[2],"% variance")) + 
-	geom_text_repel(aes(x=PC1, y=PC2, label=Patient), point.padding = unit(2,"points")) +
-		coord_fixed()
-dev.off()
-
 
 ########### Heatmap
 
 # This picks the top 50 genes, ranked by absolute fold change, and does a heatmap of the normalized expression
 
 d <- as.data.frame(assay(vsd))
-names(d) <- paste(colData(vsd)$Time, colData(vsd)$ID, sep=":")
+names(d) <- paste(colData(vsd)$Group, colData(vsd)$ID, sep=":")
 
-d$Gene <- mapIds(orgDB, keys=row.names(d), column='SYMBOL', keytype='ENSEMBL', multiVals=my_concat)
+d$Gene <- row.names(d)
 d$ID <- row.names(d)
 
-# Use Gene ID in place where there is no gene name
-idx <- is.na(d$Gene)
-d$Gene[idx] <- d$ID[idx]
-idx <- which(d$Gene == 'NA')  # mapIDs with my_concat can return "NA", not NA
-d$Gene[idx] <- d$ID[idx]
 
 best <- res[order(abs(res$log2FoldChange),decreasing = T)[1:50],]
 
