@@ -1,5 +1,5 @@
 library(DESeq2)
-dds <- readRDS(file='~/depot/projects/Kovinich/Kovinich_2019_01/deseq/H2O_All_dds.rds')
+dds <- readRDS(file='~/depot/projects/Kovinich/Kovinich_2019_01/deseq/All_dds.rds')
 
 vsd <- vst(dds, blind=F)
 res<-results(dds)
@@ -31,7 +31,7 @@ coords <- as.data.frame(t1$x[,1:3])
 
 
 
-write.table(coords, file='~/depot/projects/Kovinich/Kovinich_2019_01/emperor/H2O_pca.dat',
+write.table(coords, file='~/depot/projects/Kovinich/Kovinich_2019_01/emperor/All_pca.dat',
 						quote=F, sep="\t",row.names = T)
 
 # add "pc vector number" to header manually
@@ -46,6 +46,22 @@ eigenvals <- (t1$sdev ^ 2)[1:3]
 
 eig <- c('eigvals',eigenvals)
 
+
+# Add data to table
+cat('\n\n', 
+		paste0(eig, collapse='\t'), '\n',
+		paste0(varexp, collapse='\t'),
+		file='~/depot/projects/Kovinich/Kovinich_2019_01/emperor/All_pca.dat','\n', append=T)
+
+
+
+metadata <- read.table('meta', header = T, sep="\t", stringsAsFactors = T)
+
+meta <- filter(metadata, Treatment=='H2O')
+meta$Treatment <- NULL
+
+write.table(meta, file='~/depot/projects/Kovinich/Kovinich_2019_01/emperor/All_meta.dat',
+						quote=F, sep="\t", row.names=F)
 
 #meta <- data.frame(SampleID=vsd$SampleID, Surgeon=vsd$Surgeon, Group=vsd$Group, 
 #									 Run=vsd$Run, Cancer=vsd$Cancer, EdName=vsd$EdName)
