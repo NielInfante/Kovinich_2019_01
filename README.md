@@ -111,6 +111,13 @@ meta <- metadata %>% dplyr::filter(Group %in% c('MYB29A2', 'pGWB2'), Treatment==
 ###  :white_check_mark: Emperor
 Make an interactive PCA to explore data.
 
+###  :white_check_mark:  Overlaps of Up regulated genes
+
+Use findOverlaps.R.
+Restrict to genes that are at least 2 fold upregulated, with an adjusted p-value of less than 0.05.
+
+
+
 ### :x: <!--:large_orange_diamond: :white_check_mark:--> GO Analysis
 
 ### :x: <!--:large_orange_diamond: :white_check_mark:-->  Pathway Analysis
