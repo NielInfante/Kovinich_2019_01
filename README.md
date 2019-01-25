@@ -62,7 +62,7 @@ conda deactivate
 
 
 
-###  :large_orange_diamond: <!--:white_check_mark:--> Differential expression
+###  :white_check_mark: Differential expression
 
 Set up the stats, and use DESeq2 to find differential expression.
 
@@ -77,6 +77,36 @@ outPrefix <- 'H2O_NAC42_vs_pGWB2'
 meta <- metadata %>% dplyr::filter(Group %in% c('NAC42', 'pGWB2'), Treatment=='H2O')
 ```
 
+
+##### WGE_NAC42_vs_pGWB2
+```
+PCA_Group <- 'Group'
+design =~ Group
+contrast <- c('Group','NAC42','pGWB2')
+outPrefix <- 'WGE_NAC42_vs_pGWB2'
+
+meta <- metadata %>% dplyr::filter(Group %in% c('NAC42', 'pGWB2'), Treatment=='WGE')
+```
+
+##### H2O_MYB29A2_vs_pGWB2
+```
+PCA_Group <- 'Group'
+design =~ Group
+contrast <- c('Group','MYB29A2','pGWB2')
+outPrefix <- 'WGE_MYB29A2_vs_pGWB2'
+
+meta <- metadata %>% dplyr::filter(Group %in% c('MYB29A2', 'pGWB2'), Treatment=='H2O')
+```
+
+##### WGE_MYB29A2_vs_pGWB2
+```
+PCA_Group <- 'Group'
+design =~ Group
+contrast <- c('Group','MYB29A2','pGWB2')
+outPrefix <- 'WGE_MYB29A2_vs_pGWB2'
+
+meta <- metadata %>% dplyr::filter(Group %in% c('MYB29A2', 'pGWB2'), Treatment=='WGE')
+```
 
 ###  :white_check_mark: Emperor
 Make an interactive PCA to explore data.

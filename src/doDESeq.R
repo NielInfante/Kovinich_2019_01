@@ -26,16 +26,16 @@ metadata <- read.table('meta', header = T, sep="\t", stringsAsFactors = T)
 
 # The Stats
 
-PCA_Group <- 'Treatment'
-design =~ Treatment 
-contrast <- c('Treatment','H2O','WGE')
-outPrefix <- 'All'
+PCA_Group <- 'Group'
+design =~ Group 
+contrast <- c('Group','MYB29A2','pGWB2')
+outPrefix <- 'H2O_MYB29A2_vs_pGWB2'
 
-#meta <- metadata %>% dplyr::filter(Group %in% c('NAC42', 'pGWB2'), 
-#																	 Treatment=='H2O')
+meta <- metadata %>% dplyr::filter(Group %in% c('MYB29A2', 'pGWB2'), 
+																	 Treatment=='H2O')
 
 #meta <- metadata %>% dplyr::filter(Treatment=='H2O')
-meta <- metadata
+#meta <- metadata
 
 doItAll()		
 		
