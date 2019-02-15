@@ -1,3 +1,5 @@
+library(tidyverse)
+
 d <- read.table('~/depot/projects/Kovinich/Kovinich_2019_01/previousWork/WGEvsH2O.txt',
 								header=T, sep="\t", stringsAsFactors = F)
 
