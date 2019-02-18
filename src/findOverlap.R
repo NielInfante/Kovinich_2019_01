@@ -149,10 +149,8 @@ overlap_out <- overlap %>% filter(OLD_FC > 0 &
 																		WGE_FC > 0 &
 																		WGE_p < 0.05)
 
-write_tsv(overlap_out, '~/depot/projects/Kovinich/Kovinich_2019_01/overlap/')
+write_tsv(overlap_out, '~/depot/projects/Kovinich/Kovinich_2019_01/overlap/wge_old.txt')
 
-
-ol <- ol %>% mutate(Up= ifelse()    )
 
 # Venn style
 
@@ -163,7 +161,7 @@ old_up <- ol %>% filter(OLD_FC > 0) %>% select(Gene)
 
 
 library(VennDiagram)
-png('pics/hallmark_venn.png')
+png('~/depot/projects/Kovinich/Kovinich_2019_01/overlap/wge_old.png')
 
 vd <- venn.diagram(list("WGE Up"=wge_up$Gene, "Old Up"=old_up$Gene), 
 									 fill=3:4, alpha=0.4, filename=NULL, cex=1.3, cat.cex=1.4,
@@ -172,6 +170,45 @@ grid.newpage()  ;  grid.draw(vd)
 
 dev.off()
 
+
+
+
+# Overlap and non-overlap of gene up in old WGE 
+# and MYB29A2 WGE
+
+wge <- read_tsv('~/depot/projects/Kovinich/Kovinich_2019_01/deseq/WGE_MYB29A2_vs_pGWB2_results.txt')
+old <- read_tsv('~/depot/projects/Kovinich/Kovinich_2019_01/previousWork/withID_WGEvsH2O.txt')
+
+wge <- wge %>% select(Gene, WGE_FC=log2FoldChange, WGE_p=padj)
+old <- old %>% select(Gene=Glyma2.0, OLD_FC=log2FoldChange, OLD_p=padj)
+
+overlap <- inner_join(old, wge)
+
+overlap_out <- overlap %>% filter(OLD_FC > 0 &
+																		OLD_p < 0.05 &
+																		WGE_FC > 0 &
+																		WGE_p < 0.05)
+
+write_tsv(overlap_out, '~/depot/projects/Kovinich/Kovinich_2019_01/overlap/wge_MYB29A2_old.txt')
+
+
+# Venn style
+
+ol <- overlap %>% filter(OLD_p < 0.05 | WGE_p < 0.05)
+
+wge_up <- ol %>% filter(WGE_FC > 0) %>% select(Gene)
+old_up <- ol %>% filter(OLD_FC > 0) %>% select(Gene)
+
+
+library(VennDiagram)
+png('~/depot/projects/Kovinich/Kovinich_2019_01/overlap/wge_MYB29A2_old.png')
+
+vd <- venn.diagram(list("WGE Up"=wge_up$Gene, "Old Up"=old_up$Gene), 
+									 fill=3:4, alpha=0.4, filename=NULL, cex=1.3, cat.cex=1.4,
+									 main="")
+grid.newpage()  ;  grid.draw(vd)
+
+dev.off()
 
 
 
