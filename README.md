@@ -116,6 +116,9 @@ Make an interactive PCA to explore data.
 Use findOverlaps.R.
 Restrict to genes that are at least 2 fold upregulated, with an adjusted p-value of less than 0.05.
 
+###  :white_check_mark: Annotation
+Use annotate.R to add some annotation to results files.
+
 
 
 ### :x: <!--:large_orange_diamond: :white_check_mark:--> GO Analysis
