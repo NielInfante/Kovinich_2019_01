@@ -27,6 +27,13 @@ doTheAnnotation('~/depot/projects/Kovinich/Kovinich_2019_01/deseq/H2O_All_result
 doTheAnnotation('~/depot/projects/Kovinich/Kovinich_2019_01/deseq/H2O_NAC42_vs_pGWB2_results.txt')    
 doTheAnnotation('~/depot/projects/Kovinich/Kovinich_2019_01/deseq/WGE_NAC42_vs_pGWB2_results.txt')
 
+# Overlap Files
+doTheAnnotation('~/depot/projects/Kovinich/Kovinich_2019_01/overlap/H2O_WGE_MYB29A2.txt')
+doTheAnnotation('~/depot/projects/Kovinich/Kovinich_2019_01/overlap/H2O_WGE_NAC42.txt')
+doTheAnnotation('~/depot/projects/Kovinich/Kovinich_2019_01/overlap/NAC42_MYB29A2_H2O.txt')
+doTheAnnotation('~/depot/projects/Kovinich/Kovinich_2019_01/overlap/NAC42_MYB29A2_WGE.txt')
+doTheAnnotation('~/depot/projects/Kovinich/Kovinich_2019_01/overlap/wge_MYB29A2_old.txt')
+doTheAnnotation('~/depot/projects/Kovinich/Kovinich_2019_01/overlap/wge_old.txt')									
 
 # Define the Function
 doTheAnnotation <- function(fileName){
