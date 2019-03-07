@@ -118,11 +118,12 @@ Restrict to genes that are at least 2 fold upregulated, with an adjusted p-value
 
 Did not use FC of 2 on old overlaps. See code for specifics (findOverlap.R).
 For old overlaps, also did a venn diagram of all upregulated genes, up in one, the other, or both.
+Note, to find correspondence of old gene names to new gene names, I used Glyma_11_to_Glyma_20_Correspondence_Full.csv downloaded from SoyBase.org.
+
 
 
 ###  :white_check_mark: Annotation
-Use annotate.R to add some annotation to results files.
-
+Use annotate.R to add some annotation to results files. entrez.tsv was obtained from ensembl plants, release 42.
 
 
 ### :x: <!--:large_orange_diamond: :white_check_mark:--> GO Analysis
