@@ -139,8 +139,8 @@ write_tsv(overlap_out, '~/depot/projects/Kovinich/Kovinich_2019_01/overlap/H2O_W
 wge <- read_tsv('~/depot/projects/Kovinich/Kovinich_2019_01/deseq/WGE_NAC42_vs_pGWB2_results.txt')
 old <- read_tsv('~/depot/projects/Kovinich/Kovinich_2019_01/previousWork/withID_WGEvsH2O.txt')
 
-wge <- wge %>% select(Gene, WGE_FC=log2FoldChange, WGE_p=padj)
-old <- old %>% select(Gene=Glyma2.0, OLD_FC=log2FoldChange, OLD_p=padj)
+wge <- wge %>% dplyr::select(GeneID, WGE_FC=log2FoldChange, WGE_p=padj)
+old <- old %>% dplyr::select(GeneID=Glyma2.0, OLD_FC=log2FoldChange, OLD_p=padj)
 
 overlap <- inner_join(old, wge)
 
@@ -150,6 +150,22 @@ overlap_out <- overlap %>% filter(OLD_FC > 0 &
 																		WGE_p < 0.05)
 
 write_tsv(overlap_out, '~/depot/projects/Kovinich/Kovinich_2019_01/overlap/wge_old.txt')
+
+
+overlap_out <- overlap %>% filter(WGE_FC > 0 &
+																		WGE_p < 0.05 &
+																		!(OLD_FC > 0 & OLD_p < 0.05))
+
+write_tsv(overlap_out, '~/depot/projects/Kovinich/Kovinich_2019_01/overlap/wge_MyvpG_Up_old_not.txt')
+
+overlap_out <- overlap %>% filter(OLD_FC > 0 &
+																		OLD_p < 0.05 &
+																		!(WGE_FC > 0 & WGE_p < 0.05))
+
+write_tsv(overlap_out, '~/depot/projects/Kovinich/Kovinich_2019_01/overlap/old_Up_wge_MyvpG_not.txt')
+
+
+
 
 
 # Venn style
@@ -190,6 +206,33 @@ overlap_out <- overlap %>% filter(OLD_FC > 0 &
 																		WGE_p < 0.05)
 
 write_tsv(overlap_out, '~/depot/projects/Kovinich/Kovinich_2019_01/overlap/wge_MYB29A2_old.txt')
+
+
+# Non-overlap of gene up in old WGE 
+# and MYB29A2 WGE
+
+wge <- read_tsv('~/depot/projects/Kovinich/Kovinich_2019_01/deseq/WGE_MYB29A2_vs_pGWB2_results.txt')
+old <- read_tsv('~/depot/projects/Kovinich/Kovinich_2019_01/previousWork/withID_WGEvsH2O.txt')
+
+wge <- wge %>% dplyr::select(GeneID, WGE_FC=log2FoldChange, WGE_p=padj)
+old <- old %>% dplyr::select(GeneID=Glyma2.0, OLD_FC=log2FoldChange, OLD_p=padj)
+
+overlap <- inner_join(old, wge)
+
+#overlap <- overlap %>% mutate()
+
+
+overlap_out <- overlap %>% filter(WGE_FC > 0 &
+																		WGE_p < 0.05 &
+																		!(OLD_FC > 0 & OLD_p < 0.05))
+
+write_tsv(overlap_out, '~/depot/projects/Kovinich/Kovinich_2019_01/overlap/wge_MYB29A2_Up_old_not.txt')
+
+overlap_out <- overlap %>% filter(OLD_FC > 0 &
+																		OLD_p < 0.05 &
+																		!(WGE_FC > 0 & WGE_p < 0.05))
+
+write_tsv(overlap_out, '~/depot/projects/Kovinich/Kovinich_2019_01/overlap/old_Up_wge_MYB29A2_not.txt')
 
 
 # Venn style

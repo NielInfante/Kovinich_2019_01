@@ -35,6 +35,13 @@ doTheAnnotation('~/depot/projects/Kovinich/Kovinich_2019_01/overlap/NAC42_MYB29A
 doTheAnnotation('~/depot/projects/Kovinich/Kovinich_2019_01/overlap/wge_MYB29A2_old.txt')
 doTheAnnotation('~/depot/projects/Kovinich/Kovinich_2019_01/overlap/wge_old.txt')									
 
+doTheAnnotation('~/depot/projects/Kovinich/Kovinich_2019_01/overlap/old_Up_wge_MYB29A2_not.txt')									
+doTheAnnotation('~/depot/projects/Kovinich/Kovinich_2019_01/overlap/old_Up_wge_MyvpG_not.txt')									
+doTheAnnotation('~/depot/projects/Kovinich/Kovinich_2019_01/overlap/wge_MYB29A2_Up_old_not.txt')									
+doTheAnnotation('~/depot/projects/Kovinich/Kovinich_2019_01/overlap/wge_MyvpG_Up_old_not.txt')									
+
+
+
 # Define the Function
 doTheAnnotation <- function(fileName){
 
